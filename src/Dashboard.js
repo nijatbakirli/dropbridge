@@ -8,19 +8,621 @@ import {
   Settings, Plus, Eye, Edit, Trash2, Bell, Search,
   Filter, Download, Calendar, Star, Moon, Sun,
   Package, CreditCard, Target,
-  BarChart3
+  BarChart3,
+  // Added icons for MarketingTab
+  Mail, Facebook, Instagram, Twitter,
+  Youtube, Linkedin, MessageSquare, Megaphone
 } from 'lucide-react';
 
-// Placeholder components
-const MarketingTab = () => <div className="p-6">Marketing Content Placeholder</div>;
+// Placeholder components (Payments and Settings remain placeholders)
 const PaymentsTab = () => <div className="p-6">Payments Content Placeholder</div>;
 const SettingsTab = () => <div className="p-6">Settings Content Placeholder</div>;
 
-// Removed interfaces: Store, Product, Order, SalesData, TrafficData, DeviceData, ConversionData, StatCardProps
+// --- Enhanced MarketingTab component --- 
+const MarketingTab = ({ darkMode }) => {
+  // Button handlers
+  const handleCreateCampaignClick = () => alert('Create campaign button clicked!');
+  const handleFilterCampaignsClick = () => alert('Filter campaigns button clicked!');
+  const handleDownloadReportClick = () => alert('Download report button clicked!');
+  const handleDateRangeClick = () => alert('Date range button clicked!');
+  const handleCampaignActionClick = (campaignId, action) => alert(`Action "${action}" for campaign ${campaignId}`);
+  
+  // Mock data for campaigns
+  const [campaigns] = useState([
+    {
+      id: 1,
+      name: 'Summer Sale Promotion',
+      platform: 'Facebook',
+      status: 'active',
+      budget: 1200,
+      spent: 780,
+      clicks: 3450,
+      impressions: 45000,
+      conversions: 128,
+      ctr: 7.67,
+      cpc: 0.23,
+      roi: 320
+    },
+    {
+      id: 2,
+      name: 'New Product Launch',
+      platform: 'Google',
+      status: 'active',
+      budget: 2000,
+      spent: 1650,
+      clicks: 5200,
+      impressions: 78000,
+      conversions: 215,
+      ctr: 6.67,
+      cpc: 0.32,
+      roi: 280
+    },
+    {
+      id: 3,
+      name: 'Retargeting Campaign',
+      platform: 'Instagram',
+      status: 'pending',
+      budget: 800,
+      spent: 0,
+      clicks: 0,
+      impressions: 0,
+      conversions: 0,
+      ctr: 0,
+      cpc: 0,
+      roi: 0
+    },
+    {
+      id: 4,
+      name: 'Holiday Special Offer',
+      platform: 'Email',
+      status: 'completed',
+      budget: 500,
+      spent: 500,
+      clicks: 2800,
+      impressions: 15000,
+      conversions: 95,
+      ctr: 18.67,
+      cpc: 0.18,
+      roi: 410
+    }
+  ]);
+
+  // Mock data for ad spend by platform
+  const adSpendData = [
+    { name: 'Facebook', value: 3200, color: '#3b82f6' },
+    { name: 'Google', value: 2800, color: '#10b981' },
+    { name: 'Instagram', value: 1500, color: '#f59e0b' },
+    { name: 'TikTok', value: 900, color: '#8b5cf6' },
+    { name: 'Email', value: 600, color: '#ef4444' }
+  ];
+
+  // Mock data for social media metrics
+  const socialMediaData = [
+    { 
+      platform: 'Facebook', 
+      followers: 12500, 
+      engagement: 3.2, 
+      posts: 45, 
+      clicks: 2800,
+      color: '#3b82f6',
+      icon: Facebook
+    },
+    { 
+      platform: 'Instagram', 
+      followers: 8700, 
+      engagement: 4.7, 
+      posts: 78, 
+      clicks: 3400,
+      color: '#f59e0b',
+      icon: Instagram
+    },
+    { 
+      platform: 'Twitter', 
+      followers: 5200, 
+      engagement: 2.1, 
+      posts: 120, 
+      clicks: 1200,
+      color: '#0ea5e9',
+      icon: Twitter
+    },
+    { 
+      platform: 'LinkedIn', 
+      followers: 3800, 
+      engagement: 1.8, 
+      posts: 25, 
+      clicks: 950,
+      color: '#0369a1',
+      icon: Linkedin
+    },
+    { 
+      platform: 'YouTube', 
+      followers: 2200, 
+      engagement: 5.3, 
+      posts: 12, 
+      clicks: 1800,
+      color: '#ef4444',
+      icon: Youtube
+    }
+  ];
+
+  // Mock data for email campaigns
+  const emailCampaigns = [
+    {
+      id: 1,
+      name: 'Weekly Newsletter',
+      sent: 5000,
+      opened: 1850,
+      clicked: 720,
+      openRate: 37,
+      clickRate: 14.4,
+      date: '2024-05-28'
+    },
+    {
+      id: 2,
+      name: 'Product Announcement',
+      sent: 4500,
+      opened: 2250,
+      clicked: 1125,
+      openRate: 50,
+      clickRate: 25,
+      date: '2024-05-21'
+    },
+    {
+      id: 3,
+      name: 'Special Discount',
+      sent: 3800,
+      opened: 1900,
+      clicked: 950,
+      openRate: 50,
+      clickRate: 25,
+      date: '2024-05-14'
+    }
+  ];
+
+  // Mock data for email performance over time
+  const emailPerformanceData = [
+    { week: 'Нед 1', openRate: 32, clickRate: 12 },
+    { week: 'Нед 2', openRate: 38, clickRate: 15 },
+    { week: 'Нед 3', openRate: 45, clickRate: 18 },
+    { week: 'Нед 4', openRate: 42, clickRate: 16 }
+  ];
+
+  // Helper function for status background
+  const getStatusBg = (status) => {
+    switch (status) {
+      case 'active': return darkMode ? 'bg-green-800/50 text-green-300' : 'bg-green-100 text-green-700';
+      case 'pending': return darkMode ? 'bg-yellow-800/50 text-yellow-300' : 'bg-yellow-100 text-yellow-700';
+      case 'completed': return darkMode ? 'bg-blue-800/50 text-blue-300' : 'bg-blue-100 text-blue-700';
+      default: return darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600';
+    }
+  };
+
+  return (
+    <div className="p-6">
+      {/* Page Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Маркетинг</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={handleFilterCampaignsClick}
+            className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
+          >
+            <Filter className="w-4 h-4" />
+            Фильтр
+          </button>
+          <button
+            onClick={handleDateRangeClick}
+            className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
+          >
+            <Calendar className="w-4 h-4" />
+            Период
+          </button>
+          <button
+            onClick={handleDownloadReportClick}
+            className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
+          >
+            <Download className="w-4 h-4" />
+            Отчет
+          </button>
+          <button
+            onClick={handleCreateCampaignClick}
+            className="px-4 py-2 text-sm rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Новая кампания
+          </button>
+        </div>
+      </div>
+
+      {/* Marketing Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700 hover:shadow-lg hover:shadow-gray-800/30' : 'bg-white border-gray-200 hover:shadow-lg'} p-6 rounded-xl border shadow-sm hover:shadow transition-all`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>Расходы на рекламу</p>
+              <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>$9,000</p>
+              <p className={`text-base mt-1 text-red-500`}>
+                +12.5% за месяц
+              </p>
+            </div>
+            <div className={`p-3 rounded-lg ${darkMode ? 'bg-teal-900/30' : 'bg-teal-100'} transition-colors`}>
+              <DollarSign className="w-7 h-7 text-teal-500" />
+            </div>
+          </div>
+        </div>
+        
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700 hover:shadow-lg hover:shadow-gray-800/30' : 'bg-white border-gray-200 hover:shadow-lg'} p-6 rounded-xl border shadow-sm hover:shadow transition-all`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>Клики</p>
+              <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>11,450</p>
+              <p className={`text-base mt-1 text-green-500`}>
+                +8.2% за месяц
+              </p>
+            </div>
+            <div className={`p-3 rounded-lg ${darkMode ? 'bg-teal-900/30' : 'bg-teal-100'} transition-colors`}>
+              <TrendingUp className="w-7 h-7 text-teal-500" />
+            </div>
+          </div>
+        </div>
+        
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700 hover:shadow-lg hover:shadow-gray-800/30' : 'bg-white border-gray-200 hover:shadow-lg'} p-6 rounded-xl border shadow-sm hover:shadow transition-all`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>Конверсии</p>
+              <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>438</p>
+              <p className={`text-base mt-1 text-green-500`}>
+                +15.3% за месяц
+              </p>
+            </div>
+            <div className={`p-3 rounded-lg ${darkMode ? 'bg-teal-900/30' : 'bg-teal-100'} transition-colors`}>
+              <Target className="w-7 h-7 text-teal-500" />
+            </div>
+          </div>
+        </div>
+        
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700 hover:shadow-lg hover:shadow-gray-800/30' : 'bg-white border-gray-200 hover:shadow-lg'} p-6 rounded-xl border shadow-sm hover:shadow transition-all`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>ROI</p>
+              <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>285%</p>
+              <p className={`text-base mt-1 text-green-500`}>
+                +5.4% за месяц
+              </p>
+            </div>
+            <div className={`p-3 rounded-lg ${darkMode ? 'bg-teal-900/30' : 'bg-teal-100'} transition-colors`}>
+              <DollarSign className="w-7 h-7 text-teal-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ad Spend and Social Media Metrics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Ad Spend by Platform */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
+          <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Расходы по платформам</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="h-64 flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={adSpendData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {adSpendData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value) => [`$${value}`, 'Расходы']}
+                    contentStyle={{ 
+                      backgroundColor: darkMode ? '#1f2937' : '#ffffff',
+                      borderColor: darkMode ? '#374151' : '#e5e7eb',
+                      color: darkMode ? '#f9fafb' : '#111827'
+                    }} 
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div>
+              <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>
+                <div className="text-sm font-medium mb-2">Платформы</div>
+                {adSpendData.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
+                      <span>{item.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span>${item.value}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className={`pt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                <div className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Общие расходы</div>
+                <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>
+                  ${adSpendData.reduce((sum, item) => sum + item.value, 0).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Email Marketing Performance */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
+          <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Email-маркетинг</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={emailPerformanceData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
+                <XAxis 
+                  dataKey="week" 
+                  tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                  axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }} 
+                />
+                <YAxis 
+                  tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                  axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }} 
+                />
+                <Tooltip 
+                  formatter={(value) => [`${value}%`, '']}
+                  contentStyle={{ 
+                    backgroundColor: darkMode ? '#1f2937' : '#ffffff',
+                    borderColor: darkMode ? '#374151' : '#e5e7eb',
+                    color: darkMode ? '#f9fafb' : '#111827'
+                  }} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="openRate" 
+                  name="Open Rate" 
+                  stroke="#14b8a6" 
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: '#14b8a6', strokeWidth: 0 }}
+                  activeDot={{ r: 6, fill: '#14b8a6', strokeWidth: 0 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="clickRate" 
+                  name="Click Rate" 
+                  stroke="#f59e0b" 
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }}
+                  activeDot={{ r: 6, fill: '#f59e0b', strokeWidth: 0 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-between mt-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-teal-500"></div>
+              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Open Rate</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Click Rate</span>
+            </div>
+            <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Средний Open Rate: {emailPerformanceData.reduce((sum, item) => sum + item.openRate, 0) / emailPerformanceData.length}%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Campaign List */}
+      <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors mb-8`}>
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Рекламные кампании</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Название</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Платформа</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Бюджет</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Потрачено</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клики</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>CTR</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>ROI</th>
+                <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {campaigns.map((campaign) => (
+                <tr key={campaign.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{campaign.name}</td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.platform}</td>
+                  <td className="py-3 px-4">
+                    <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(campaign.status)}`}>
+                      {campaign.status}
+                    </span>
+                  </td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${campaign.budget}</td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${campaign.spent}</td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.clicks.toLocaleString()}</td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.ctr}%</td>
+                  <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.roi}%</td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleCampaignActionClick(campaign.id, 'view')}
+                        className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleCampaignActionClick(campaign.id, 'edit')}
+                        className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleCampaignActionClick(campaign.id, 'delete')}
+                        className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Social Media and Email Campaigns */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Social Media Metrics */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Социальные сети</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Платформа</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Подписчики</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Вовлеченность</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клики</th>
+                </tr>
+              </thead>
+              <tbody>
+                {socialMediaData.map((platform, index) => {
+                  const Icon = platform.icon;
+                  return (
+                    <tr key={index} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                      <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 rounded" style={{ backgroundColor: platform.color }}>
+                            <Icon className="w-4 h-4 text-white" />
+                          </div>
+                          {platform.platform}
+                        </div>
+                      </td>
+                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{platform.followers.toLocaleString()}</td>
+                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{platform.engagement}%</td>
+                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{platform.clicks.toLocaleString()}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Email Campaigns */}
+        <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Email-кампании</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Название</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Отправлено</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Open Rate</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Click Rate</th>
+                  <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Дата</th>
+                </tr>
+              </thead>
+              <tbody>
+                {emailCampaigns.map((campaign) => (
+                  <tr key={campaign.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                    <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-teal-500" />
+                        {campaign.name}
+                      </div>
+                    </td>
+                    <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.sent.toLocaleString()}</td>
+                    <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.openRate}%</td>
+                    <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.clickRate}%</td>
+                    <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{campaign.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Campaign Management Tools */}
+      <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors mb-8`}>
+        <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Инструменты управления</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
+                <Megaphone className="w-5 h-5 text-blue-500" />
+              </div>
+              <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Создать кампанию</h3>
+            </div>
+            <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Создание новой рекламной кампании для любой платформы</p>
+            <button 
+              onClick={handleCreateCampaignClick}
+              className={`w-full py-2 px-3 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} transition-colors`}
+            >
+              Создать
+            </button>
+          </div>
+          
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'}`}>
+                <Mail className="w-5 h-5 text-green-500" />
+              </div>
+              <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Email-рассылка</h3>
+            </div>
+            <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Создание и отправка email-рассылок вашим клиентам</p>
+            <button 
+              onClick={() => alert('Email campaign button clicked!')}
+              className={`w-full py-2 px-3 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} transition-colors`}
+            >
+              Создать рассылку
+            </button>
+          </div>
+          
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
+                <MessageSquare className="w-5 h-5 text-purple-500" />
+              </div>
+              <h3 className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Социальные сети</h3>
+            </div>
+            <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Управление публикациями в социальных сетях</p>
+            <button 
+              onClick={() => alert('Social media button clicked!')}
+              className={`w-full py-2 px-3 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} transition-colors`}
+            >
+              Управление
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- End of MarketingTab component ---
+
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview'); // Removed <string>
-  const [darkMode, setDarkMode] = useState(false); // Removed <boolean>, Default to light mode
+  const [activeTab, setActiveTab] = useState('overview'); 
+  const [darkMode, setDarkMode] = useState(false); 
 
   // Load theme preference from localStorage on initial render
   useEffect(() => {
@@ -57,27 +659,27 @@ const Dashboard = () => {
   const handleNotificationsClick = () => alert('Notifications button clicked!');
   const handleNewStoreClick = () => alert('New store button clicked!');
   const handleFilterStoresClick = () => alert('Filter stores button clicked!');
-  const handleStoreActionClick = (storeId, action) => alert(`Action "${action}" for store ${storeId}`); // Removed type annotations
+  const handleStoreActionClick = (storeId, action) => alert(`Action "${action}" for store ${storeId}`); 
   const handleAddProductClick = () => alert('Add product button clicked!');
   const handleFilterProductsClick = () => alert('Filter products button clicked!');
   const handleDownloadProductsClick = () => alert('Download products button clicked!');
-  const handleProductActionClick = (productId, action) => alert(`Action "${action}" for product ${productId}`); // Removed type annotations
+  const handleProductActionClick = (productId, action) => alert(`Action "${action}" for product ${productId}`); 
   const handleFilterOrdersClick = () => alert('Filter orders button clicked!');
   const handleDownloadOrdersClick = () => alert('Download orders button clicked!');
-  const handleOrderActionClick = (orderId, action) => alert(`Action "${action}" for order ${orderId}`); // Removed type annotations
+  const handleOrderActionClick = (orderId, action) => alert(`Action "${action}" for order ${orderId}`); 
   const handleDateRangeClick = () => alert('Date range button clicked!');
   const handleExportAnalyticsClick = () => alert('Export analytics button clicked!');
   const handleViewAllOrdersClick = () => {
     alert('Переход к просмотру всех заказов');
     setActiveTab('orders');
   };
-  const handleRecentOrderActionClick = (orderId, action) => { // Removed type annotations
+  const handleRecentOrderActionClick = (orderId, action) => { 
     alert(`Действие "${action}" для заказа ${orderId}`);
   };
   // -----------------------------
 
   // Mock data for stores
-  const [stores] = useState([ // Removed <Store[]>
+  const [stores] = useState([ 
     {
       id: 1,
       name: 'Fashion Store USA',
@@ -117,7 +719,7 @@ const Dashboard = () => {
   ]);
 
   // Mock data for products
-  const [products] = useState([ // Removed <Product[]>
+  const [products] = useState([ 
     {
       id: 1,
       name: 'Wireless Bluetooth Headphones',
@@ -173,7 +775,7 @@ const Dashboard = () => {
   ]);
 
   // Mock data for orders
-  const [orders] = useState([ // Removed <Order[]>
+  const [orders] = useState([ 
     {
       id: '#1001',
       customer: 'John Smith',
@@ -221,7 +823,7 @@ const Dashboard = () => {
   ]);
 
   // Analytics data
-  const salesData = [ // Removed : SalesData[]
+  const salesData = [ 
     { month: 'Янв', revenue: 12000, orders: 45, profit: 5400 },
     { month: 'Фев', revenue: 19000, orders: 78, profit: 8550 },
     { month: 'Мар', revenue: 15000, orders: 62, profit: 6750 },
@@ -230,27 +832,27 @@ const Dashboard = () => {
     { month: 'Июн', revenue: 35000, orders: 156, profit: 15750 }
   ];
 
-  const trafficData = [ // Removed : TrafficData[]
+  const trafficData = [ 
     { name: 'Facebook', value: 45, color: '#3b82f6', visitors: 1278 },
     { name: 'Google', value: 30, color: '#10b981', visitors: 852 },
     { name: 'TikTok', value: 15, color: '#f59e0b', visitors: 426 },
     { name: 'Прямой', value: 10, color: '#8b5cf6', visitors: 284 }
   ];
 
-  const deviceData = [ // Removed : DeviceData[]
+  const deviceData = [ 
     { name: 'Desktop', value: 55, color: '#3b82f6' },
     { name: 'Mobile', value: 35, color: '#10b981' },
     { name: 'Tablet', value: 10, color: '#f59e0b' }
   ];
 
-  const conversionData = [ // Removed : ConversionData[]
+  const conversionData = [ 
     { week: 'Нед 1', rate: 2.1 },
     { week: 'Нед 2', rate: 2.8 },
     { week: 'Нед 3', rate: 3.2 },
     { week: 'Нед 4', rate: 2.9 }
   ];
 
-  const getStatusBg = (status) => { // Removed type annotations
+  const getStatusBg = (status) => { 
     // Adjusted for light/dark mode with slightly softer backgrounds
     switch (status) {
       case 'active': return darkMode ? 'bg-green-800/50 text-green-300' : 'bg-green-100 text-green-700';
@@ -263,13 +865,13 @@ const Dashboard = () => {
     }
   };
 
-  const StatCard = ({ icon: Icon, title, value, change, changeType, subtitle }) => ( // Removed : React.FC<StatCardProps>
+  const StatCard = ({ icon: Icon, title, value, change, changeType, subtitle }) => ( 
     // StatCard with dark mode support and slightly larger fonts
     <div className={`${darkMode ? 'bg-gray-800 border-gray-700 hover:shadow-lg hover:shadow-gray-800/30' : 'bg-white border-gray-200 hover:shadow-lg'} p-6 rounded-xl border shadow-sm hover:shadow transition-all`}>
       <div className="flex items-center justify-between">
         <div>
-          <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>{title}</p> {/* Increased from text-sm */}
-          <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>{value}</p> {/* Increased from text-2xl */}
+          <p className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>{title}</p> 
+          <p className={`text-3xl font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>{value}</p> 
           {subtitle && (
             <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors`}>{subtitle}</p>
           )}
@@ -281,13 +883,13 @@ const Dashboard = () => {
         </div>
         {/* Using Teal accent color for both themes */}
         <div className={`p-3 rounded-lg ${darkMode ? 'bg-teal-900/30' : 'bg-teal-100'} transition-colors`}>
-          <Icon className="w-7 h-7 text-teal-500" /> {/* Increased icon size */}
+          <Icon className="w-7 h-7 text-teal-500" /> 
         </div>
       </div>
     </div>
   );
 
-  const Sidebar = () => ( // Removed : React.FC
+  const Sidebar = () => ( 
     // Sidebar with dark mode support and slightly larger fonts
     <div className={`w-64 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border-r min-h-screen shadow-sm transition-colors`}>
       <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
@@ -328,13 +930,13 @@ const Dashboard = () => {
     </div>
   );
 
-  const Header = () => ( // Removed : React.FC
+  const Header = () => ( 
     // Header with theme toggle support and functional buttons
     <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm transition-colors`}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Добро пожаловать, Александр!</h1>
-          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'} text-base transition-colors`}>Вот что происходит с вашим бизнесом сегодня</p> {/* Increased from text-sm */}
+          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'} text-base transition-colors`}>Вот что происходит с вашим бизнесом сегодня</p> 
         </div>
         <div className="flex items-center gap-4">
           {/* Theme toggle button */}
@@ -412,53 +1014,51 @@ const Dashboard = () => {
                   <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Продажи</h2>
                   <button
                     onClick={handleDateRangeClick}
-                    className={`px-3 py-1.5 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
+                    className={`px-3 py-1 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
                   >
                     <Calendar className="w-4 h-4" />
-                    Последние 6 месяцев
+                    За 30 дней
                   </button>
                 </div>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={salesData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
+                    <BarChart data={salesData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} vertical={false} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
                       />
-                      <YAxis
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
+                      <YAxis 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tickFormatter={(value) => `$${value / 1000}k`} 
                       />
-                      <Tooltip
-                        contentStyle={{
+                      <Tooltip 
+                        cursor={{ fill: darkMode ? 'rgba(107, 114, 128, 0.2)' : 'rgba(229, 231, 235, 0.5)' }} 
+                        contentStyle={{ 
                           backgroundColor: darkMode ? '#1f2937' : '#ffffff',
                           borderColor: darkMode ? '#374151' : '#e5e7eb',
                           color: darkMode ? '#f9fafb' : '#111827'
+                        }} 
+                        formatter={(value, name) => {
+                          if (name === 'revenue') return [`$${value.toLocaleString()}`, 'Выручка'];
+                          if (name === 'orders') return [value, 'Заказы'];
+                          if (name === 'profit') return [`$${value.toLocaleString()}`, 'Прибыль'];
+                          return [value, name];
                         }}
                       />
-                      <Bar dataKey="revenue" name="Выручка ($)" fill="#14b8a6" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="revenue" fill="#14b8a6" radius={[4, 4, 0, 0]} barSize={20} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Traffic Sources */}
+              {/* Traffic Sources Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Источники трафика</h2>
-                  <button
-                    onClick={handleExportAnalyticsClick}
-                    className={`px-3 py-1.5 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
-                  >
-                    <Download className="w-4 h-4" />
-                    Экспорт
-                  </button>
-                </div>
+                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Источники трафика</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="h-64 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
@@ -476,13 +1076,13 @@ const Dashboard = () => {
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
-                        <Tooltip
-                          formatter={(value) => [`${value}%`, 'Доля трафика']}
-                          contentStyle={{
+                        <Tooltip 
+                          formatter={(value, name, props) => [`${value}% (${props.payload.visitors} посетителей)`, props.payload.name]}
+                          contentStyle={{ 
                             backgroundColor: darkMode ? '#1f2937' : '#ffffff',
                             borderColor: darkMode ? '#374151' : '#e5e7eb',
                             color: darkMode ? '#f9fafb' : '#111827'
-                          }}
+                          }} 
                         />
                       </PieChart>
                     </ResponsiveContainer>
@@ -498,7 +1098,7 @@ const Dashboard = () => {
                           </div>
                           <div className="flex items-center gap-3">
                             <span>{item.value}%</span>
-                            <span className="text-sm text-gray-400">{item.visitors} посет.</span>
+                            <span className="text-xs text-gray-400">({item.visitors})</span>
                           </div>
                         </div>
                       ))}
@@ -506,7 +1106,7 @@ const Dashboard = () => {
                     <div className={`pt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
                       <div className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Всего посетителей</div>
                       <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>
-                        {trafficData.reduce((sum, item) => sum + (item.visitors || 0), 0).toLocaleString()}
+                        {trafficData.reduce((sum, item) => sum + item.visitors, 0).toLocaleString()}
                       </div>
                     </div>
                   </div>
@@ -514,109 +1114,61 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Recent Orders and Conversion Rate */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              {/* Recent Orders */}
-              <div className={`lg:col-span-2 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Последние заказы</h2>
-                  <button
-                    onClick={handleViewAllOrdersClick}
-                    className={`px-3 py-1.5 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
-                  >
-                    <Eye className="w-4 h-4" />
-                    Все заказы
-                  </button>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>ID</th>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клиент</th>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Товар</th>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Сумма</th>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
-                        <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orders.slice(0, 3).map((order) => (
-                        <tr key={order.id} className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
-                          <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.id}</td>
-                          <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.customer}</td>
-                          <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.product}</td>
-                          <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>${order.amount.toFixed(2)}</td>
-                          <td className="py-3 px-4">
-                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => handleRecentOrderActionClick(order.id, 'view')}
-                                className={`p-1 rounded ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleRecentOrderActionClick(order.id, 'edit')}
-                                className={`p-1 rounded ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            {/* Recent Orders */}
+            <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Последние заказы</h2>
+                <button 
+                  onClick={handleViewAllOrdersClick}
+                  className="text-sm text-teal-500 hover:text-teal-600 font-medium transition-colors"
+                >
+                  Посмотреть все
+                </button>
               </div>
-
-              {/* Conversion Rate */}
-              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
-                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Конверсия</h2>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={conversionData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
-                      <XAxis
-                        dataKey="week"
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
-                      />
-                      <YAxis
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
-                      />
-                      <Tooltip
-                        formatter={(value) => [`${value}%`, 'Конверсия']}
-                        contentStyle={{
-                          backgroundColor: darkMode ? '#1f2937' : '#ffffff',
-                          borderColor: darkMode ? '#374151' : '#e5e7eb',
-                          color: darkMode ? '#f9fafb' : '#111827'
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="rate"
-                        name="Конверсия"
-                        stroke="#14b8a6"
-                        strokeWidth={2}
-                        dot={{ r: 4, fill: '#14b8a6', strokeWidth: 0 }}
-                        activeDot={{ r: 6, fill: '#14b8a6', strokeWidth: 0 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className={`mt-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>
-                  Средняя конверсия за 4 недели: { (conversionData.reduce((sum, item) => sum + item.rate, 0) / conversionData.length).toFixed(1) }%
-                </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>ID Заказа</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клиент</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Сумма</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Дата</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.slice(0, 5).map((order) => (
+                      <tr key={order.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{order.id}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.customer}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${order.amount}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(order.status)}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.date}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleRecentOrderActionClick(order.id, 'view')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleRecentOrderActionClick(order.id, 'edit')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -644,55 +1196,57 @@ const Dashboard = () => {
               </div>
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
-              <table className="w-full">
-                <thead>
-                  <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Название</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Выручка</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Заказы</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Конверсия</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stores.map((store) => (
-                    <tr key={store.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{store.name}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(store.status)}`}>
-                          {store.status}
-                        </span>
-                      </td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${store.revenue.toLocaleString()}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{store.orders}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{store.conversion}%</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleStoreActionClick(store.id, 'view')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleStoreActionClick(store.id, 'edit')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleStoreActionClick(store.id, 'delete')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Название</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Выручка</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Заказы</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Конверсия</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {stores.map((store) => (
+                      <tr key={store.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{store.name}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(store.status)}`}>
+                            {store.status}
+                          </span>
+                        </td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${store.revenue.toLocaleString()}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{store.orders}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{store.conversion}%</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleStoreActionClick(store.id, 'view')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleStoreActionClick(store.id, 'edit')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleStoreActionClick(store.id, 'delete')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         );
@@ -726,62 +1280,58 @@ const Dashboard = () => {
               </div>
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
-              <table className="w-full">
-                <thead>
-                  <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Товар</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Магазин</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Цена</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Запас</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Продано</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Рейтинг</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr key={product.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>
-                        <div className="flex items-center gap-3">
-                          {/* Placeholder for image */}
-                          <div className={`w-10 h-10 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center text-gray-400`}>?</div>
-                          <span>{product.name}</span>
-                        </div>
-                      </td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{product.store}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${product.price.toFixed(2)}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{product.stock}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{product.sold}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors flex items-center gap-1`}>
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        {product.rating.toFixed(1)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleProductActionClick(product.id, 'view')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleProductActionClick(product.id, 'edit')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleProductActionClick(product.id, 'delete')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Название</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Цена</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Прибыль</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Остаток</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Продано</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Рейтинг</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{product.name}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${product.price}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${product.profit}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{product.stock}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{product.sold}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors flex items-center gap-1`}>
+                          <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
+                          {product.rating}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleProductActionClick(product.id, 'view')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleProductActionClick(product.id, 'edit')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleProductActionClick(product.id, 'delete')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         );
@@ -808,53 +1358,59 @@ const Dashboard = () => {
               </div>
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors`}>
-              <table className="w-full">
-                <thead>
-                  <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>ID</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клиент</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Товар</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Сумма</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Дата</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Магазин</th>
-                    <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{order.id}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.customer}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.product}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${order.amount.toFixed(2)}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(order.status)}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.date}</td>
-                      <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.store}</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleOrderActionClick(order.id, 'view')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleOrderActionClick(order.id, 'edit')}
-                            className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>ID Заказа</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Клиент</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Сумма</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Статус</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Дата</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Магазин</th>
+                      <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Действия</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {orders.map((order) => (
+                      <tr key={order.id} className={`border-b ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-gray-50'} transition-colors`}>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-white' : 'text-gray-900'} font-medium transition-colors`}>{order.id}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.customer}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>${order.amount}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 text-xs rounded-full ${getStatusBg(order.status)}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.date}</td>
+                        <td className={`py-3 px-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{order.store}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleOrderActionClick(order.id, 'view')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleOrderActionClick(order.id, 'edit')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleOrderActionClick(order.id, 'delete')}
+                              className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600 text-red-400' : 'hover:bg-gray-100 text-red-500'} transition-colors`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         );
@@ -869,7 +1425,7 @@ const Dashboard = () => {
                   className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors flex items-center gap-2`}
                 >
                   <Calendar className="w-4 h-4" />
-                  Выбрать дату
+                  Период
                 </button>
                 <button
                   onClick={handleExportAnalyticsClick}
@@ -880,103 +1436,212 @@ const Dashboard = () => {
                 </button>
               </div>
             </div>
-
-            {/* More detailed charts */}
+            {/* Analytics Charts Row 1 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Profit Chart */}
+              {/* Sales Overview Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
-                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Прибыль</h2>
+                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Обзор продаж</h2>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={salesData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
+                    <AreaChart data={salesData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                       <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
+                        </linearGradient>
                         <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
+                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} vertical={false} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
                       />
-                      <YAxis
-                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }}
-                        axisLine={{ stroke: darkMode ? '#4b5563' : '#d1d5db' }}
+                      <YAxis 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tickFormatter={(value) => `$${value / 1000}k`} 
                       />
-                      <Tooltip
-                        contentStyle={{
+                      <Tooltip 
+                        contentStyle={{ 
                           backgroundColor: darkMode ? '#1f2937' : '#ffffff',
                           borderColor: darkMode ? '#374151' : '#e5e7eb',
                           color: darkMode ? '#f9fafb' : '#111827'
+                        }} 
+                        formatter={(value, name) => {
+                          if (name === 'revenue') return [`$${value.toLocaleString()}`, 'Выручка'];
+                          if (name === 'profit') return [`$${value.toLocaleString()}`, 'Прибыль'];
+                          return [value, name];
                         }}
                       />
-                      <Area type="monotone" dataKey="profit" name="Прибыль ($)" stroke="#10b981" fillOpacity={1} fill="url(#colorProfit)" />
+                      <Area type="monotone" dataKey="revenue" stroke="#14b8a6" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+                      <Area type="monotone" dataKey="profit" stroke="#f59e0b" fillOpacity={1} fill="url(#colorProfit)" strokeWidth={2} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Device Usage */}
+              {/* Conversion Rate Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
-                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Использование устройств</h2>
-                <div className="h-80 flex items-center justify-center">
+                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Коэффициент конверсии</h2>
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={deviceData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        dataKey="value"
-                        labelLine={false}
-                        label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                          const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                          const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-                          const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-                          return (
-                            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                              {`${(percent * 100).toFixed(0)}%`}
-                            </text>
-                          );
-                        }}
-                      >
-                        {deviceData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value, name) => [`${value}%`, name]}
-                        contentStyle={{
+                    <LineChart data={conversionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} vertical={false} />
+                      <XAxis 
+                        dataKey="week" 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
+                      />
+                      <YAxis 
+                        tick={{ fill: darkMode ? '#9ca3af' : '#6b7280' }} 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tickFormatter={(value) => `${value}%`} 
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
                           backgroundColor: darkMode ? '#1f2937' : '#ffffff',
                           borderColor: darkMode ? '#374151' : '#e5e7eb',
                           color: darkMode ? '#f9fafb' : '#111827'
-                        }}
+                        }} 
+                        formatter={(value) => [`${value}%`, 'Конверсия']}
                       />
-                    </PieChart>
+                      <Line 
+                        type="monotone" 
+                        dataKey="rate" 
+                        stroke="#8b5cf6" 
+                        strokeWidth={3} 
+                        dot={{ r: 5, fill: '#8b5cf6', strokeWidth: 0 }}
+                        activeDot={{ r: 7, fill: '#8b5cf6', strokeWidth: 0 }}
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex justify-center gap-6 mt-4">
-                  {deviceData.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                      <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>{item.name}</span>
+              </div>
+            </div>
+            {/* Analytics Charts Row 2 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Traffic Sources Pie Chart (already in overview, maybe show different metric here?) */}
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
+                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Источники трафика (Посетители)</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="h-64 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={trafficData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={2}
+                          dataKey="visitors" // Changed to visitors
+                        >
+                          {trafficData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value, name, props) => [`${value.toLocaleString()} посетителей (${props.payload.value}%)`, props.payload.name]}
+                          contentStyle={{ 
+                            backgroundColor: darkMode ? '#1f2937' : '#ffffff',
+                            borderColor: darkMode ? '#374151' : '#e5e7eb',
+                            color: darkMode ? '#f9fafb' : '#111827'
+                          }} 
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div>
+                    <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>
+                      <div className="text-sm font-medium mb-2">Источники</div>
+                      {trafficData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
+                            <span>{item.name}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span>{item.visitors.toLocaleString()}</span>
+                            <span className="text-xs text-gray-400">({item.value}%)</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                    <div className={`pt-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors`}>
+                      <div className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>Всего посетителей</div>
+                      <div className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} transition-colors`}>
+                        {trafficData.reduce((sum, item) => sum + item.visitors, 0).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Device Usage Chart */}
+              <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors`}>
+                <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Использование устройств</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="h-64 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={deviceData}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          dataKey="value"
+                        >
+                          {deviceData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value) => [`${value}%`, 'Доля']}
+                          contentStyle={{ 
+                            backgroundColor: darkMode ? '#1f2937' : '#ffffff',
+                            borderColor: darkMode ? '#374151' : '#e5e7eb',
+                            color: darkMode ? '#f9fafb' : '#111827'
+                          }} 
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div>
+                    <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors`}>
+                      <div className="text-sm font-medium mb-2">Устройства</div>
+                      {deviceData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
+                            <span>{item.name}</span>
+                          </div>
+                          <span>{item.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         );
-      case 'marketing': return <MarketingTab />;
-      case 'payments': return <PaymentsTab />;
-      case 'settings': return <SettingsTab />;
+      case 'marketing':
+        // Use the enhanced MarketingTab component, passing the darkMode prop
+        return <MarketingTab darkMode={darkMode} />;
+      case 'payments':
+        return <PaymentsTab />;
+      case 'settings':
+        return <SettingsTab />;
       default:
-        return <div className="p-6">Select a tab</div>;
+        return <div className="p-6">Выберите раздел</div>;
     }
   };
 
