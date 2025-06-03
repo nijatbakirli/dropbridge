@@ -11,7 +11,7 @@ import {
   BarChart3,
   // Added icons for MarketingTab
   Mail, Facebook, Instagram, Twitter,
-  Youtube, Linkedin, MessageSquare, Megaphone
+  Youtube, Linkedin, MessageSquare, Megaphone, XCircle
 } from 'lucide-react';
 
 // Placeholder components (Payments and Settings remain placeholders)
@@ -21,11 +21,11 @@ const SettingsTab = () => <div className="p-6">Settings Content Placeholder</div
 // --- Enhanced MarketingTab component --- 
 const MarketingTab = ({ darkMode }) => {
   // Button handlers
-  const handleCreateCampaignClick = () => alert('Create campaign button clicked!');
-  const handleFilterCampaignsClick = () => alert('Filter campaigns button clicked!');
-  const handleDownloadReportClick = () => alert('Download report button clicked!');
-  const handleDateRangeClick = () => alert('Date range button clicked!');
-  const handleCampaignActionClick = (campaignId, action) => alert(`Action "${action}" for campaign ${campaignId}`);
+  const handleCreateCampaignClick = () => console.log('Create campaign button clicked!');
+  const handleFilterCampaignsClick = () => console.log('Filter campaigns button clicked!');
+  const handleDownloadReportClick = () => console.log('Download report button clicked!');
+  const handleDateRangeClick = () => console.log('Date range button clicked!');
+  const handleCampaignActionClick = (campaignId, action) => console.log(`Action "${action}" for campaign ${campaignId}`);
   
   // Mock data for campaigns
   const [campaigns] = useState([
@@ -563,9 +563,9 @@ const MarketingTab = ({ darkMode }) => {
 
       {/* Campaign Management Tools */}
       <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors mb-8`}>
-        <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Инструменты управления</h2>
+        <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors`}>Инструменты управления</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'bg-gray-200 bg-gray-50'} transition-colors`}>
             <div className="flex items-center gap-3 mb-3">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
                 <Megaphone className="w-5 h-5 text-blue-500" />
@@ -581,7 +581,7 @@ const MarketingTab = ({ darkMode }) => {
             </button>
           </div>
           
-          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'bg-gray-200 bg-gray-50'} transition-colors`}>
             <div className="flex items-center gap-3 mb-3">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-green-900/30' : 'bg-green-100'}`}>
                 <Mail className="w-5 h-5 text-green-500" />
@@ -590,14 +590,14 @@ const MarketingTab = ({ darkMode }) => {
             </div>
             <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Создание и отправка email-рассылок вашим клиентам</p>
             <button 
-              onClick={() => alert('Email campaign button clicked!')}
+              onClick={() => console.log('Email campaign button clicked!')}
               className={`w-full py-2 px-3 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} transition-colors`}
             >
               Создать рассылку
             </button>
           </div>
           
-          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'border-gray-200 bg-gray-50'} transition-colors`}>
+          <div className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-700/30' : 'bg-gray-200 bg-gray-50'} transition-colors`}>
             <div className="flex items-center gap-3 mb-3">
               <div className={`p-2 rounded-lg ${darkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
                 <MessageSquare className="w-5 h-5 text-purple-500" />
@@ -606,7 +606,7 @@ const MarketingTab = ({ darkMode }) => {
             </div>
             <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Управление публикациями в социальных сетях</p>
             <button 
-              onClick={() => alert('Social media button clicked!')}
+              onClick={() => console.log('Social media button clicked!')}
               className={`w-full py-2 px-3 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} transition-colors`}
             >
               Управление
@@ -619,10 +619,205 @@ const MarketingTab = ({ darkMode }) => {
 };
 // --- End of MarketingTab component ---
 
+// Modal for viewing store details
+const ViewStoreModal = ({ store, onClose, darkMode }) => {
+  // The 'store' prop is guaranteed to be not null due to conditional rendering in Dashboard
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`p-6 rounded-xl shadow-lg w-full max-w-md ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Детали магазина: {store.name}</h3>
+          <button onClick={onClose} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+        <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} space-y-2`}>
+          <p><strong>ID:</strong> {store.id}</p>
+          <p><strong>Название:</strong> {store.name}</p>
+          <p><strong>Статус:</strong> {store.status}</p>
+          <p><strong>Выручка:</strong> ${store.revenue?.toLocaleString()}</p>
+          <p><strong>Заказы:</strong> {store.orders}</p>
+          <p><strong>Конверсия:</strong> {store.conversion}%</p>
+          <p><strong>URL:</strong> <a href={`http://${store.url}`} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">{store.url}</a></p>
+          <p><strong>Создан:</strong> {store.created}</p>
+          <p><strong>Товары:</strong> {store.products}</p>
+          <p><strong>Посетители:</strong> {store.visitors}</p>
+        </div>
+        <button 
+          onClick={onClose} 
+          className="mt-6 w-full py-2 px-4 rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors"
+        >
+          Закрыть
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Modal for editing store details
+const EditStoreModal = ({ store, onClose, onSave, darkMode }) => {
+  const [editedStore, setEditedStore] = useState(store);
+
+  useEffect(() => {
+    setEditedStore(store);
+  }, [store]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedStore(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    onSave(editedStore);
+    onClose();
+  };
+
+  // The 'store' prop is guaranteed to be not null due to conditional rendering in Dashboard
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`p-6 rounded-xl shadow-lg w-full max-w-md ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">Редактировать магазин: {store.name}</h3>
+          <button onClick={onClose} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Название:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={editedStore.name || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="status" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Статус:</label>
+            <select
+              id="status"
+              name="status"
+              value={editedStore.status || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            >
+              <option value="active">active</option>
+              <option value="pending">pending</option>
+              <option value="inactive">inactive</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="revenue" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Выручка:</label>
+            <input
+              type="number"
+              id="revenue"
+              name="revenue"
+              value={editedStore.revenue || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="orders" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Заказы:</label>
+            <input
+              type="number"
+              id="orders"
+              name="orders"
+              value={editedStore.orders || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="conversion" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Конверсия (%):</label>
+            <input
+              type="number"
+              id="conversion"
+              name="conversion"
+              value={editedStore.conversion || ''}
+              onChange={handleChange}
+              step="0.1"
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="url" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>URL:</label>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              value={editedStore.url || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="created" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Дата создания:</label>
+            <input
+              type="date"
+              id="created"
+              name="created"
+              value={editedStore.created || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="products" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Количество товаров:</label>
+            <input
+              type="number"
+              id="products"
+              name="products"
+              value={editedStore.products || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+          <div>
+            <label htmlFor="visitors" className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Посетители:</label>
+            <input
+              type="number"
+              id="visitors"
+              name="visitors"
+              value={editedStore.visitors || ''}
+              onChange={handleChange}
+              className={`w-full p-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            />
+          </div>
+        </div>
+        <button 
+          onClick={handleSave} 
+          className="mt-6 w-full py-2 px-4 rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors"
+        >
+          Сохранить изменения
+        </button>
+      </div>
+    </div>
+  );
+};
+
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview'); 
   const [darkMode, setDarkMode] = useState(false); 
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [showSearchInput, setShowSearchInput] = useState(false); // State to toggle search input visibility
+  const [showNotifications, setShowNotifications] = useState(false); // State to toggle notifications dropdown
+  const [showFilterStoresModal, setShowFilterStoresModal] = useState(false); // New state for filter stores modal
+  const [showAddStoreModal, setShowAddStoreModal] = useState(false); // New state for add store modal
+  const [showViewStoreModal, setShowViewStoreModal] = useState(false); // State for view store modal
+  const [showEditStoreModal, setShowEditStoreModal] = useState(false); // State for edit store modal
+  const [selectedStore, setSelectedStore] = useState(null); // State to hold the selected store data
+
+  // Mock data for notifications
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: 'Новый заказ #1005 поступил!', time: '5 минут назад', read: false },
+    { id: 2, message: 'Кампания "Летняя распродажа" завершена.', time: '1 час назад', read: false },
+    { id: 3, message: 'Низкий запас товара: Беспроводные наушники.', time: '3 часа назад', read: true },
+    { id: 4, message: 'Обновление системы доступно.', time: '1 день назад', read: false },
+  ]);
 
   // Load theme preference from localStorage on initial render
   useEffect(() => {
@@ -655,31 +850,95 @@ const Dashboard = () => {
   };
 
   // --- Button Click Handlers ---
-  const handleSearchClick = () => alert('Search button clicked!');
-  const handleNotificationsClick = () => alert('Notifications button clicked!');
-  const handleNewStoreClick = () => alert('New store button clicked!');
-  const handleFilterStoresClick = () => alert('Filter stores button clicked!');
-  const handleStoreActionClick = (storeId, action) => alert(`Action "${action}" for store ${storeId}`); 
-  const handleAddProductClick = () => alert('Add product button clicked!');
-  const handleFilterProductsClick = () => alert('Filter products button clicked!');
-  const handleDownloadProductsClick = () => alert('Download products button clicked!');
-  const handleProductActionClick = (productId, action) => alert(`Action "${action}" for product ${productId}`); 
-  const handleFilterOrdersClick = () => alert('Filter orders button clicked!');
-  const handleDownloadOrdersClick = () => alert('Download orders button clicked!');
-  const handleOrderActionClick = (orderId, action) => alert(`Action "${action}" for order ${orderId}`); 
-  const handleDateRangeClick = () => alert('Date range button clicked!');
-  const handleExportAnalyticsClick = () => alert('Export analytics button clicked!');
+  const handleSearchClick = () => {
+    setShowSearchInput(prev => !prev); // Toggle search input visibility
+    if (showSearchInput && searchTerm) {
+      // Simulate search action
+      console.log('Searching for:', searchTerm);
+      // In a real app, you'd filter data here
+      // For now, we just log and clear the search term
+      setSearchTerm('');
+    }
+  };
+
+  const handleNotificationsClick = () => {
+    setShowNotifications(prev => !prev); // Toggle notifications dropdown visibility
+  };
+
+  const markNotificationAsRead = (id) => {
+    setNotifications(notifications.map(notif => 
+      notif.id === id ? { ...notif, read: true } : notif
+    ));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const handleNewStoreClick = () => {
+    setShowAddStoreModal(true); // Open the add store modal
+    console.log('Add new store button clicked!');
+  };
+
+  const handleFilterStoresClick = () => {
+    setShowFilterStoresModal(true); // Open the filter stores modal
+    console.log('Filter stores button clicked!');
+  };
+
+  const handleStoreActionClick = (storeId, action) => { 
+    const store = stores.find(s => s.id === storeId);
+    if (!store) {
+      console.log(`Store with ID ${storeId} not found.`);
+      return;
+    }
+
+    switch (action) {
+      case 'view':
+        setSelectedStore(store);
+        setShowViewStoreModal(true);
+        break;
+      case 'edit':
+        setSelectedStore(store);
+        setShowEditStoreModal(true);
+        break;
+      case 'delete':
+        if (window.confirm(`Вы уверены, что хотите удалить магазин "${store.name}"?`)) {
+          setStores(prevStores => prevStores.filter(s => s.id !== storeId));
+          console.log(`Магазин "${store.name}" (ID: ${storeId}) удален.`);
+        }
+        break;
+      default:
+        console.log(`Действие "${action}" для магазина ${storeId}`);
+    }
+  };
+
+  const handleSaveStore = (updatedStore) => {
+    setStores(prevStores => 
+      prevStores.map(store => (store.id === updatedStore.id ? updatedStore : store))
+    );
+    console.log('Магазин сохранен:', updatedStore);
+  };
+
+  const handleAddProductClick = () => console.log('Add product button clicked!');
+  const handleFilterProductsClick = () => console.log('Filter products button clicked!');
+  const handleDownloadProductsClick = () => console.log('Download products button clicked!');
+  const handleProductActionClick = (productId, action) => console.log(`Action "${action}" for product ${productId}`); 
+  const handleFilterOrdersClick = () => console.log('Filter orders button clicked!');
+  const handleDownloadOrdersClick = () => console.log('Download orders button clicked!');
+  const handleOrderActionClick = (orderId, action) => console.log(`Action "${action}" for order ${orderId}`); 
+  const handleDateRangeClick = () => console.log('Date range button clicked!');
+  const handleExportAnalyticsClick = () => console.log('Export analytics button clicked!');
   const handleViewAllOrdersClick = () => {
-    alert('Переход к просмотру всех заказов');
+    console.log('Переход к просмотру всех заказов');
     setActiveTab('orders');
   };
   const handleRecentOrderActionClick = (orderId, action) => { 
-    alert(`Действие "${action}" для заказа ${orderId}`);
+    console.log(`Действие "${action}" для заказа ${orderId}`);
   };
   // -----------------------------
 
   // Mock data for stores
-  const [stores] = useState([ 
+  const [stores, setStores] = useState([ // Changed to mutable state for delete action
     {
       id: 1,
       name: 'Fashion Store USA',
@@ -947,22 +1206,94 @@ const Dashboard = () => {
           >
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-          {/* Search button */}
-          <button
-            onClick={handleSearchClick}
-            className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors`}
-          >
-            <Search className="w-5 h-5" />
-          </button>
-          {/* Notifications button */}
-          <button
-            onClick={handleNotificationsClick}
-            className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors relative`}
-          >
-            <Bell className="w-5 h-5" />
-            {/* Notification dot */}
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+
+          {/* Search input and button */}
+          <div className="relative flex items-center">
+            {showSearchInput && (
+              <input
+                type="text"
+                placeholder="Поиск..."
+                className={`px-3 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all w-48`}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchClick();
+                  }
+                }}
+              />
+            )}
+            <button
+              onClick={handleSearchClick}
+              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors ${showSearchInput ? 'ml-2' : ''}`}
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Notifications button and dropdown */}
+          <div className="relative">
+            <button
+              onClick={handleNotificationsClick}
+              className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-colors relative`}
+            >
+              <Bell className="w-5 h-5" />
+              {/* Notification dot */}
+              {notifications.filter(notif => !notif.read).length > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              )}
+            </button>
+            {showNotifications && (
+              <div className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg z-10 ${darkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'}`}>
+                <div className={`p-4 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'} flex justify-between items-center`}>
+                  <h3 className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Уведомления</h3>
+                  <button
+                    onClick={clearAllNotifications}
+                    className="text-xs text-teal-500 hover:text-teal-600"
+                  >
+                    Очистить все
+                  </button>
+                </div>
+                <div className="max-h-60 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map(notif => (
+                      <div 
+                        key={notif.id} 
+                        className={`p-4 flex items-start gap-3 ${darkMode ? 'border-b border-gray-600' : 'border-b border-gray-200'} ${!notif.read ? (darkMode ? 'bg-gray-600/30' : 'bg-blue-50/50') : ''}`}
+                      >
+                        <div className="flex-1">
+                          <p className={`${darkMode ? 'text-gray-200' : 'text-gray-800'} text-sm font-medium`}>{notif.message}</p>
+                          <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-xs mt-1`}>{notif.time}</p>
+                        </div>
+                        {!notif.read && (
+                          <button
+                            onClick={() => markNotificationAsRead(notif.id)}
+                            className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-500' : 'hover:bg-gray-200'} text-teal-500`}
+                            title="Отметить как прочитанное"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        )}
+                        {notif.read && (
+                          <button
+                            onClick={() => setNotifications(notifications.filter(n => n.id !== notif.id))}
+                            className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-500' : 'hover:bg-gray-200'} text-red-500`}
+                            title="Удалить"
+                          >
+                            <XCircle className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className={`p-4 text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Нет новых уведомлений.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -1248,6 +1579,67 @@ const Dashboard = () => {
                 </table>
               </div>
             </div>
+
+            {/* Filter Stores Modal */}
+            {showFilterStoresModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className={`p-6 rounded-xl shadow-lg w-96 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">Фильтр магазинов</h3>
+                    <button onClick={() => setShowFilterStoresModal(false)} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>Здесь будут опции фильтрации магазинов.</p>
+                  <button 
+                    onClick={() => setShowFilterStoresModal(false)} 
+                    className="w-full py-2 px-4 rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors"
+                  >
+                    Применить фильтр
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Add Store Modal */}
+            {showAddStoreModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className={`p-6 rounded-xl shadow-lg w-96 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">Добавить новый магазин</h3>
+                    <button onClick={() => setShowAddStoreModal(false)} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}>
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>Форма для добавления нового магазина.</p>
+                  <button 
+                    onClick={() => setShowAddStoreModal(false)} 
+                    className="w-full py-2 px-4 rounded-lg bg-teal-500 hover:bg-teal-600 text-white transition-colors"
+                  >
+                    Добавить магазин
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* View Store Modal - Conditionally rendered */}
+            {showViewStoreModal && selectedStore && (
+              <ViewStoreModal 
+                store={selectedStore} 
+                onClose={() => setShowViewStoreModal(false)} 
+                darkMode={darkMode} 
+              />
+            )}
+
+            {/* Edit Store Modal - Conditionally rendered */}
+            {showEditStoreModal && selectedStore && (
+              <EditStoreModal 
+                store={selectedStore} 
+                onClose={() => setShowEditStoreModal(false)} 
+                onSave={handleSaveStore} 
+                darkMode={darkMode}
+              />
+            )}
           </div>
         );
       case 'products':
@@ -1659,4 +2051,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
