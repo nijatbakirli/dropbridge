@@ -8,7 +8,7 @@ import {
   Settings, Plus, Eye, Edit, Trash2, Bell, Search,
   Filter, Download, Calendar, Star, Moon, Sun,
   Package, CreditCard, Target,
-  BarChart3,
+  BarChart3, Menu, // Added Menu icon for mobile sidebar toggle
   // Added icons for MarketingTab
   Mail, Facebook, Instagram, Twitter,
   Youtube, Linkedin, MessageSquare, Megaphone, XCircle, LogIn, UserPlus
@@ -384,9 +384,9 @@ const MarketingTab = ({ darkMode }) => {
   return (
     <div className="p-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Маркетинг</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 justify-end w-full sm:w-auto">
           <button
             onClick={handleFilterCampaignsClick}
             className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-all duration-200 ease-in-out flex items-center gap-2 cursor-pointer`}
@@ -587,7 +587,7 @@ const MarketingTab = ({ darkMode }) => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-4 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-teal-500"></div>
               <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Open Rate</span>
@@ -609,7 +609,7 @@ const MarketingTab = ({ darkMode }) => {
           <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Рекламные кампании</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm">
             <thead>
               <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                 <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>Название</th>
@@ -675,7 +675,7 @@ const MarketingTab = ({ darkMode }) => {
             <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Социальные сети</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-sm">
               <thead>
                 <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                   <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>Платформа</th>
@@ -713,7 +713,7 @@ const MarketingTab = ({ darkMode }) => {
             <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Email-кампании</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-sm">
               <thead>
                 <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                   <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>Название</th>
@@ -1231,6 +1231,7 @@ const Dashboard = () => {
   const [showEditStoreModal, setShowEditStoreModal] = useState(false); // State for edit store modal
   const [selectedStore, setSelectedStore] = useState(null); // State to hold the selected store data
   const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for mobile sidebar toggle
 
   // New states for product and order modals
   const [showViewProductModal, setShowViewProductModal] = useState(false);
@@ -1289,6 +1290,11 @@ const Dashboard = () => {
   // Toggle theme function
   const toggleTheme = () => {
     setDarkMode(prev => !prev);
+  };
+
+  // Toggle sidebar for mobile
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
   };
 
   // --- Button Click Handlers ---
@@ -1439,6 +1445,7 @@ const Dashboard = () => {
   const handleViewAllOrdersClick = () => {
     console.log('Переход к просмотру всех заказов');
     setActiveTab('orders');
+    setIsSidebarOpen(false); // Close sidebar on tab change for mobile
   };
   const handleRecentOrderActionClick = (orderId, action) => { 
     // This is for the overview tab's recent orders, can reuse main order action handler
@@ -1657,10 +1664,10 @@ const Dashboard = () => {
     </div>
   );
 
-  const Sidebar = () => ( 
-    // Sidebar with dark mode support and slightly larger fonts
-    <div className={`w-64 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border-r min-h-screen shadow-sm transition-colors duration-200 ease-in-out`}>
-      <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
+  const Sidebar = ({isOpen, onClose}) => ( 
+    // Sidebar with dark mode support and mobile responsiveness
+    <div className={`fixed inset-y-0 left-0 z-40 w-64 ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border-r shadow-lg lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out flex justify-between items-center`}>
         <div className="flex items-center gap-3">
           {/* Using Teal gradient for logo background */}
           <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-md">
@@ -1668,6 +1675,12 @@ const Dashboard = () => {
           </div>
           <span className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>DropBridge</span>
         </div>
+        <button 
+          onClick={onClose}
+          className="lg:hidden p-2 rounded-full text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100"
+        >
+          <XCircle className="w-6 h-6" />
+        </button>
       </div>
 
       <nav className="px-4 py-4">
@@ -1683,7 +1696,7 @@ const Dashboard = () => {
         ].map(item => (
           <button
             key={item.id}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => { setActiveTab(item.id); onClose(); }} // Close sidebar on click
             className={`w-full flex items-center gap-3 px-4 py-3 mb-1 rounded-lg transition-all duration-200 ease-in-out text-base font-medium ${
               activeTab === item.id
                 ? 'bg-teal-500 text-white shadow-sm'
@@ -1698,15 +1711,23 @@ const Dashboard = () => {
     </div>
   );
 
-  const Header = () => ( 
+  const Header = ({ onMenuClick }) => ( 
     // Header with theme toggle support and functional buttons
-    <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm transition-colors duration-200 ease-in-out`}>
+    <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-4 py-3 sm:px-6 sm:py-4 shadow-sm transition-colors duration-200 ease-in-out`}>
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Добро пожаловать, Александр!</h1>
-          <p className={`${darkMode ? 'text-gray-300' : 'text-gray-500'} text-base transition-colors duration-200 ease-in-out`}>Вот что происходит с вашим бизнесом сегодня</p> 
+        <div className="flex items-center">
+          <button 
+            onClick={onMenuClick} 
+            className="lg:hidden p-2 mr-2 rounded-lg text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 ease-in-out"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+            <h1 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Добро пожаловать, Александр!</h1>
+            <p className={`text-sm sm:text-base ${darkMode ? 'text-gray-300' : 'text-gray-500'} transition-colors duration-200 ease-in-out`}>Вот что происходит с вашим бизнесом сегодня</p> 
+          </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Theme toggle button */}
           <button
             onClick={toggleTheme}
@@ -1722,7 +1743,7 @@ const Dashboard = () => {
               <input
                 type="text"
                 placeholder="Поиск..."
-                className={`px-3 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 ease-in-out w-48`}
+                className={`px-3 py-2 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-100 border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200 ease-in-out w-32 sm:w-48`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => {
@@ -1753,7 +1774,7 @@ const Dashboard = () => {
               )}
             </button>
             {showNotifications && (
-              <div className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg z-10 ${darkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'} animate-fade-in`}>
+              <div className={`absolute right-0 mt-2 w-72 sm:w-80 rounded-lg shadow-lg z-10 ${darkMode ? 'bg-gray-700 border border-gray-600' : 'bg-white border border-gray-200'} animate-fade-in`}>
                 <div className={`p-4 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'} flex justify-between items-center`}>
                   <h3 className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Уведомления</h3>
                   <button
@@ -1807,7 +1828,7 @@ const Dashboard = () => {
           {isAuthenticated && (
             <button
               onClick={handleLogout}
-              className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'} transition-all duration-200 ease-in-out flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer`}
+              className={`px-3 py-2 text-sm rounded-lg ${darkMode ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'} transition-all duration-200 ease-in-out flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer`}
             >
               Выйти
             </button>
@@ -1822,7 +1843,7 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'overview':
         return (
-          <div className="p-6 animate-fade-in">
+          <div className="p-4 sm:p-6 animate-fade-in">
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <StatCard
@@ -1859,7 +1880,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Sales Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
                   <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Продажи</h2>
                   <button
                     onClick={handleDateRangeClick}
@@ -1869,7 +1890,7 @@ const Dashboard = () => {
                     За 30 дней
                   </button>
                 </div>
-                <div className="h-80">
+                <div className="h-64 sm:h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={salesData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} vertical={false} />
@@ -1902,8 +1923,8 @@ const Dashboard = () => {
               {/* Traffic Sources Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
                 <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Источники трафика</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="h-64 flex items-center justify-center">
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="h-64 w-full md:w-1/2 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -1930,7 +1951,7 @@ const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div>
+                  <div className="w-full md:w-1/2">
                     <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>
                       <div className="text-sm font-medium mb-2">Источники</div>
                       {trafficData.map((item, index) => (
@@ -1959,7 +1980,7 @@ const Dashboard = () => {
 
             {/* Recent Orders */}
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors duration-200 ease-in-out`}>
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Последние заказы</h2>
                 <button 
                   onClick={handleViewAllOrdersClick}
@@ -1969,7 +1990,7 @@ const Dashboard = () => {
                 </button>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                       <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>ID Заказа</th>
@@ -2018,10 +2039,10 @@ const Dashboard = () => {
         );
       case 'stores':
         return (
-          <div className="p-6 animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
+          <div className="p-4 sm:p-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
               <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Магазины</h2>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 justify-end w-full sm:w-auto">
                 <button
                   onClick={handleFilterStoresClick}
                   className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-all duration-200 ease-in-out flex items-center gap-2 cursor-pointer`}
@@ -2040,7 +2061,7 @@ const Dashboard = () => {
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors duration-200 ease-in-out`}>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                       <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>Название</th>
@@ -2095,7 +2116,7 @@ const Dashboard = () => {
             {/* Filter Stores Modal */}
             {showFilterStoresModal && (
               <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50 animate-fade-in">
-                <div className={`p-6 rounded-xl shadow-lg w-96 transition-colors duration-200 ease-in-out ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                <div className={`p-6 rounded-xl shadow-lg w-full max-w-sm mx-4 sm:mx-0 transition-colors duration-200 ease-in-out ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold">Фильтр магазинов</h3>
                     <button onClick={() => setShowFilterStoresModal(false)} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'} transition-colors duration-200 ease-in-out cursor-pointer`}>
@@ -2116,7 +2137,7 @@ const Dashboard = () => {
             {/* Add Store Modal */}
             {showAddStoreModal && (
               <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50 animate-fade-in">
-                <div className={`p-6 rounded-xl shadow-lg w-96 transition-colors duration-200 ease-in-out ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
+                <div className={`p-6 rounded-xl shadow-lg w-full max-w-sm mx-4 sm:mx-0 transition-colors duration-200 ease-in-out ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}>
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold">Добавить новый магазин</h3>
                     <button onClick={() => setShowAddStoreModal(false)} className={`p-1 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'} transition-colors duration-200 ease-in-out cursor-pointer`}>
@@ -2156,10 +2177,10 @@ const Dashboard = () => {
         );
       case 'products':
         return (
-          <div className="p-6 animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
+          <div className="p-4 sm:p-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
               <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Товары</h2>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 justify-end w-full sm:w-auto">
                 <button
                   onClick={handleFilterProductsClick}
                   className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-all duration-200 ease-in-out flex items-center gap-2 cursor-pointer`}
@@ -2185,7 +2206,7 @@ const Dashboard = () => {
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors duration-200 ease-in-out`}>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                       <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>Название</th>
@@ -2259,10 +2280,10 @@ const Dashboard = () => {
         );
       case 'orders':
         return (
-          <div className="p-6 animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
+          <div className="p-4 sm:p-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
               <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Заказы</h2>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 justify-end w-full sm:w-auto">
                 <button
                   onClick={handleFilterOrdersClick}
                   className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-all duration-200 ease-in-out flex items-center gap-2 cursor-pointer`}
@@ -2281,7 +2302,7 @@ const Dashboard = () => {
             </div>
             <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl border shadow-sm overflow-hidden transition-colors duration-200 ease-in-out`}>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-colors duration-200 ease-in-out`}>
                       <th className={`text-left py-3 px-4 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>ID Заказа</th>
@@ -2356,10 +2377,10 @@ const Dashboard = () => {
         );
       case 'analytics':
         return (
-          <div className="p-6 animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
+          <div className="p-4 sm:p-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
               <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Аналитика</h2>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 justify-end w-full sm:w-auto">
                 <button
                   onClick={handleDateRangeClick}
                   className={`px-4 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'} transition-all duration-200 ease-in-out flex items-center gap-2 cursor-pointer`}
@@ -2381,7 +2402,7 @@ const Dashboard = () => {
               {/* Sales Overview Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
                 <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Обзор продаж</h2>
-                <div className="h-80">
+                <div className="h-64 sm:h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={salesData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                       <defs>
@@ -2424,7 +2445,7 @@ const Dashboard = () => {
               {/* Conversion Rate Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
                 <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Коэффициент конверсии</h2>
-                <div className="h-80">
+                <div className="h-64 sm:h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={conversionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} vertical={false} />
@@ -2465,8 +2486,8 @@ const Dashboard = () => {
               {/* Traffic Sources Pie Chart (already in overview, maybe show different metric here?) */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
                 <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Источники трафика (Посетители)</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="h-64 flex items-center justify-center">
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="h-64 w-full md:w-1/2 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -2493,7 +2514,7 @@ const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div>
+                  <div className="w-full md:w-1/2">
                     <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>
                       <div className="text-sm font-medium mb-2">Источники</div>
                       {trafficData.map((item, index) => (
@@ -2522,8 +2543,8 @@ const Dashboard = () => {
               {/* Device Usage Chart */}
               <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl border shadow-sm transition-colors duration-200 ease-in-out`}>
                 <h2 className={`text-xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'} transition-colors duration-200 ease-in-out`}>Использование устройств</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="h-64 flex items-center justify-center">
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="h-64 w-full md:w-1/2 flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -2548,7 +2569,7 @@ const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div>
+                  <div className="w-full md:w-1/2">
                     <div className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} transition-colors duration-200 ease-in-out`}>
                       <div className="text-sm font-medium mb-2">Устройства</div>
                       {deviceData.map((item, index) => (
@@ -2582,10 +2603,14 @@ const Dashboard = () => {
   return (
     <>
       {isAuthenticated ? (
-        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} transition-colors duration-200 ease-in-out`}>
-          <Sidebar />
+        <div className={`flex flex-col lg:flex-row min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} transition-colors duration-200 ease-in-out`}>
+          {/* Mobile Overlay for Sidebar */}
+          {isSidebarOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" onClick={toggleSidebar}></div>
+          )}
+          <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
           <div className="flex-1 flex flex-col">
-            <Header />
+            <Header onMenuClick={toggleSidebar} />
             <main className="flex-1 overflow-y-auto">
               {renderContent()}
             </main>
